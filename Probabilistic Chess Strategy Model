@@ -1,0 +1,244 @@
+"""
+Use the following functions to add, multiply and divide, taking care of the modulo operation.
+Use mod_add to add two numbers taking modulo 1000000007. ex : c=a+b --> c=mod_add(a,b)
+Use mod_multiply to multiply two numbers taking modulo 1000000007. ex : c=a*b --> c=mod_multiply(a,b)
+Use mod_divide to divide two numbers taking modulo 1000000007. ex : c=a/b --> c=mod_divide(a,b)
+"""
+M=1000000007
+
+def mod_add(a, b):
+    a=(a%M+M)%M
+    b=(b%M+M)%M
+    return (a+b)%M
+
+def mod_multiply(a, b):
+    a=(a%M+M)%M
+    b=(b%M+M)%M
+    return (a*b)%M
+
+def mod_divide(a, b):
+    a=(a%M+M)%M
+    b=(b%M+M)%M
+    return mod_multiply(a, pow(b, M-2, M))
+
+# Problem 1a
+def calc_prob(alice_wins, bob_wins):
+    """
+    Returns:
+        The probability of Alice winning alice_wins times and Bob winning bob_wins times will be of the form p/q,
+        where p and q are positive integers,
+        return p.q^(-1) mod 1000000007.
+    """
+    pass
+    d=[]
+    for i in range(alice_wins+1):
+        l=[]
+        for j in range(bob_wins+1):
+            l.append(-1)
+        d.append(l)
+    for i in range(bob_wins+1):
+        d[0][i]=0
+    for i in range(2,alice_wins+1):
+        d[i][0]=0
+    d[1][0]=1
+    d[1][1]=1
+    for i in range(1,alice_wins+1):
+        for j in range(1,bob_wins+1):
+            if (i==1 and j==1):
+                continue
+            x1=mod_multiply(d[i-1][j],(mod_divide(j,(j+i-1))))
+            x2=mod_multiply(d[i][j-1],(mod_divide(i,(i+j-1))))
+            ans=mod_add(x1,x2)
+            d[i][j]=ans
+    return d[alice_wins][bob_wins]
+
+
+
+
+
+    
+# Problem 1b (Expectation)      
+def calc_expectation(t):
+    """
+    Returns:
+        The expected value of \sum_{i=1}^{t} Xi will be of the form p/q,
+        where p and q are positive integers,
+        return p.q^(-1) mod 1000000007.
+
+    """
+    d=[]
+    for i in range(t+1):
+        l=[]
+        for j in range(t+1):
+            l.append(-1)
+        d.append(l)
+    for i in range(t+1):
+        d[0][i]=0
+    for i in range(2,t+1):
+        d[i][0]=0
+    d[1][0]=1
+    d[1][1]=1
+    for i in range(1,t+1):
+        for j in range(1,t+1):
+            if (i==1 and j==1):
+                continue
+            x1=mod_multiply(d[i-1][j],(mod_divide(j,(j+i-1))))
+            x2=mod_multiply(d[i][j-1],(mod_divide(i,(i+j-1))))
+            ans=mod_add(x1,x2)
+            d[i][j]=ans
+    exp=0
+    for i in range(t+1):
+        for j in range(t+1):
+            if (i+j==t):
+                exp=mod_add(exp,mod_multiply((i-j),d[i][j]))
+    return exp
+
+
+    
+    pass
+
+# Problem 1b (Variance)
+def calc_variance(t):
+    """
+    Returns:
+        The variance of \sum_{i=1}^{t} Xi will be of the form p/q,
+        where p and q are positive integers,
+        return p.q^(-1) mod 1000000007.
+
+    """
+    d=[]
+    for i in range(t+1):
+        l=[]
+        for j in range(t+1):
+            l.append(-1)
+        d.append(l)
+    for i in range(t+1):
+        d[0][i]=0
+    for i in range(2,t+1):
+        d[i][0]=0
+    d[1][0]=1
+    d[1][1]=1
+    for i in range(1,t+1):
+        for j in range(1,t+1):
+            if (i==1 and j==1):
+                continue
+            x1=mod_multiply(d[i-1][j],(mod_divide(j,(j+i-1))))
+            x2=mod_multiply(d[i][j-1],(mod_divide(i,(i+j-1))))
+            ans=mod_add(x1,x2)
+            d[i][j]=ans
+    exp=0
+    for i in range(t+1):
+        for j in range(t+1):
+            if (i+j==t):
+                exp=mod_add(exp,mod_multiply(mod_multiply((i-j),(i-j)),d[i][j]))
+    return exp
+    pass
+
+print(calc_prob(93,88))
+print(calc_expectation(88))
+print(calc_variance(88))
+
+import numpy as np
+
+class Alice:
+    def __init__(self):
+        self.past_play_styles = np.array([1,1])  
+        self.results = np.array([1,0])           
+        self.opp_play_styles = np.array([1,1])  
+        self.points = 1
+
+    def play_move(self):
+        """
+        Decide Alice's play style for the current round. If you think there is no better strategy than 2a,
+        then implement the same strategy here. Else implement that non greedy strategy here.
+        
+        Returns: 
+            0 : attack
+            1 : balanced
+            2 : defence
+
+        """
+        pass
+        
+    
+    def observe_result(self, own_style, opp_style, result):
+        """
+        Update Alice's knowledge after each round based on the observed results.
+        
+        Returns:
+            None
+        """
+        pass
+       
+
+class Bob:
+    def __init__(self):
+        # Initialize numpy arrays to store Bob's past play styles, results, and opponent's play styles
+        self.past_play_styles = np.array([1,1]) 
+        self.results = np.array([0,1])          
+        self.opp_play_styles = np.array([1,1])   
+        self.points = 1
+
+    def play_move(self):
+        """
+        Decide Bob's play style for the current round.
+
+        Returns: 
+            Returns: 
+            0 : attack
+            1 : balanced
+            2 : defence
+        
+        """
+        if self.results[-1] == 1:
+            return 2
+        elif self.results[-1] == 0.5:
+            return 1
+        else:  
+            return 0
+        
+        
+    
+    def observe_result(self, own_style, opp_style, result):
+        """
+        Update Bob's knowledge after each round based on the observed results.
+        
+        Returns:
+            None
+        """
+        self.past_play_styles.append(own_style)
+        self.results.append(result)
+        self.opp_play_styles.append(opp_style)
+        self.points += result
+ 
+
+def simulate_round(alice, bob, payoff_matrix):
+    """
+    Simulates a single round of the game between Alice and Bob.
+    
+    Returns:
+        None
+    """
+    pass
+    
+
+
+def monte_carlo(num_rounds):
+    """
+    Runs a Monte Carlo simulation of the game for a specified number of rounds.
+    
+    Returns:
+        None
+    """
+    pass
+ 
+
+# Run Monte Carlo simulation with a specified number of rounds
+if __name__ == "__main__":
+    monte_carlo(num_rounds=10^5)
+
+
+
+
+
+    
